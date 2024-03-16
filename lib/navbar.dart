@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mayflutterproject/ideas/draft.dart';
-import 'package:mayflutterproject/navbar/ai.dart';
-import 'package:mayflutterproject/navbar/ideas.dart';
-import 'package:mayflutterproject/navbar/learningCenter.dart';
-import 'package:mayflutterproject/navbar/story.dart';
+import 'package:meilinflutterproject/ideas/draft.dart';
+import 'package:meilinflutterproject/navbar/ai.dart';
+import 'package:meilinflutterproject/navbar/ideas.dart';
+import 'package:meilinflutterproject/navbar/learningCenter.dart';
+import 'package:meilinflutterproject/navbar/story.dart';
+import 'package:meilinflutterproject/profile.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -26,15 +27,26 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: const Text("Community Editor",
+        title: const Text("Community Editor",
             style: TextStyle(
                 color: Colors.black,
-                fontSize: 10,
+                fontSize: 22,
                 fontWeight: FontWeight.bold)),
         leadingWidth: 180,
-        actions: const [
-          IconButton(onPressed: null, iconSize: 50.0, icon: Icon(Icons.person))
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ));
+              },
+              iconSize: 50.0,
+              icon: const Icon(
+                Icons.person,
+                color: Colors.black,
+              ))
         ],
       ),
       body: tabs[currentIndex],
@@ -58,19 +70,14 @@ class _NavbarState extends State<Navbar> {
       ),
       floatingActionButton: Visibility(
         visible: currentIndex == 1,
-        child: Ink(
-          decoration:
-              const ShapeDecoration(color: Colors.grey, shape: CircleBorder()),
-          child: IconButton(
-            iconSize: 35,
-            icon: const Icon(Icons.add),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const DraftScreen(),
-              ));
-            },
-          ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const DraftScreen(),
+            ));
+          },
+          backgroundColor: Colors.grey,
+          child: const Icon(Icons.add),
         ),
       ),
     );

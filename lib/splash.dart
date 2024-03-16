@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mayflutterproject/navbar.dart';
+
+import 'navbar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,14 +17,14 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (context) => const Navbar(),
       ));
     });
-    return Scaffold(
+    return const Scaffold(
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/images/Instagram-Logo.png'),
-          const SizedBox(height: 10),
-          const Text(
+          //Image.asset('assets/images/Instagram-Logo.png'),
+          // const SizedBox(height: 10),
+          Text(
             'Community Editor',
             style: TextStyle(
                 color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
