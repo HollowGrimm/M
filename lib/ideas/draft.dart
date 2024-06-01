@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:meilinflutterproject/singleton.dart';
+
+import 'package:intl/intl.dart';
 
 class DraftScreen extends StatefulWidget {
   const DraftScreen({super.key});
@@ -9,23 +13,32 @@ class DraftScreen extends StatefulWidget {
 }
 
 class _DraftScreenState extends State<DraftScreen> {
+  final singleton = Singleton();
   String title = "Draft";
   String author = "Meilin S.";
-  String content =
-      "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamLorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamLorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamLorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamLorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamLorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam";
+  late String date; //day, month, year
+  String content = "Type something here by pressing on the quill.";
   String feedback = "I want feedback on...";
   bool titleVisible = true;
   bool minimize = true;
   bool feedbackVisible = true;
 
   late TextEditingController titleController;
-
   QuillController contentController = QuillController.basic();
   late TextEditingController feedbackController;
+
+  late String draftKey;
 
   @override
   void initState() {
     super.initState();
+    draftKey = singleton.key;
+    if (draftKey != "") {
+      title = singleton.ideas[draftKey]![0];
+      author = singleton.ideas[draftKey]![1];
+      contentController = singleton.contentIdea[draftKey]!;
+      feedback = singleton.ideas[draftKey]![4];
+    }
     titleController = TextEditingController(text: title);
     feedbackController = TextEditingController(text: feedback);
   }
@@ -103,9 +116,8 @@ class _DraftScreenState extends State<DraftScreen> {
                         });
                       },
                       iconSize: 25.0,
-                      //TODO: Change to dynamic icon arrows
                       icon: const Icon(
-                        Icons.edit,
+                        RpgAwesome.quill_ink,
                         color: Colors.black,
                       )),
                   Visibility(
@@ -123,19 +135,28 @@ class _DraftScreenState extends State<DraftScreen> {
                       configurations: QuillEditorConfigurations(
                           controller: contentController,
                           readOnly: minimize,
-                          placeholder: content),
+                          placeholder: content,
+                          showCursor: !minimize),
                     ),
                   ),
                   Visibility(
                       visible: minimize,
                       child: Row(
                         children: [
-                          //TODO: Saves text
                           ElevatedButton(
                             onPressed: () async {
                               setState(() {
-                                content = contentController.toString();
+                                date = DateFormat.yMMMMd('en_US')
+                                    .format(DateTime.now());
                               });
+                              if (singleton.ideaKeys.contains(draftKey)) {
+                                singleton.updateIdea(draftKey, title, author,
+                                    date, contentController, feedback);
+                              } else {
+                                draftKey = singleton.generateUID();
+                                singleton.saveIdea(draftKey, title, author,
+                                    date, contentController, feedback);
+                              }
                             },
                             child: const Text(
                               'Save',
@@ -146,9 +167,15 @@ class _DraftScreenState extends State<DraftScreen> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          //TODO: Sends data to story screen and saves text
                           ElevatedButton(
-                            onPressed: () async {},
+                            onPressed: () async {
+                              setState(() {
+                                date = DateFormat.yMMMMd('en_US')
+                                    .format(DateTime.now());
+                              });
+                              singleton.publishIdea(draftKey, title, author,
+                                  date, contentController, feedback);
+                            },
                             child: const Text(
                               'Publish',
                               style: TextStyle(
@@ -178,54 +205,27 @@ class _DraftScreenState extends State<DraftScreen> {
                         onPressed: () async {
                           showDialog<String>(
                               context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    content: Column(children: [
-                                      Visibility(
-                                        visible: feedbackVisible,
-                                        child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              titleVisible = false;
-                                            });
-                                          },
-                                          child: Text(feedback,
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: !feedbackVisible,
-                                        child: TextField(
-                                          controller: feedbackController,
-                                          decoration: const InputDecoration(
-                                              border: OutlineInputBorder()),
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.normal),
-                                          onSubmitted: (text) {
-                                            setState(() {
-                                              feedbackVisible = true;
-                                            });
-                                          },
-                                          onTapOutside: (event) {
-                                            setState(() {
-                                              feedbackVisible = true;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ]),
+                              builder: (BuildContext c) => AlertDialog(
+                                    content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextField(
+                                            controller: feedbackController,
+                                            decoration: const InputDecoration(
+                                                border: OutlineInputBorder()),
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ]),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () async {
                                           setState(() {
-                                            feedback = titleController.text;
+                                            feedback = feedbackController.text;
                                           });
-                                          Navigator.of(context).pop();
+                                          Navigator.pop(c, 'Ok');
                                         },
                                         child: const Text('Ok'),
                                       ),

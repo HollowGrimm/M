@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meilinflutterproject/published/publishedworks.dart';
+import 'package:meilinflutterproject/singleton.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -9,19 +10,36 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
+  final singleton = Singleton();
   bool openSearch = false;
-  List<Widget> posts = [
-    const Text("Title",
-        style: TextStyle(
-            color: Colors.black, fontSize: 20, fontWeight: FontWeight.normal),
-        textAlign: TextAlign.center),
-    const Text(
-        "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        style: TextStyle(
-            color: Colors.black, fontSize: 10, fontWeight: FontWeight.normal),
-        textAlign: TextAlign.center),
-    const Text("Author", textAlign: TextAlign.center),
-  ];
+  List<List<String>> posts = [];
+
+  //TODO: Create Search Algorithm
+
+  String shortContent(String body) {
+    String tempSentence = "";
+    int counter = 0;
+    String tempChar = body[counter];
+
+    while (counter < body.length - 1 && counter < 121) {
+      tempSentence += tempChar;
+      counter++;
+      tempChar = body[counter];
+    }
+
+    return tempSentence;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (singleton.published.isNotEmpty && singleton.publishedKeys.isNotEmpty) {
+      for (int i = 0; i < singleton.publishedKeys.length; i++) {
+        posts.add(singleton.published[singleton.publishedKeys[i]]!);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,35 +96,108 @@ class _StoryScreenState extends State<StoryScreen> {
               ),
             ),
             Expanded(
-              child: Center(
-                  child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const PublishedWork(),
-                            ));
-                          },
-                          title: Card(
-                              clipBehavior: Clip.hardEdge,
-                              color: const Color.fromARGB(255, 203, 226, 245),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                child: posts.isEmpty // Check if the data source is empty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Publish An Idea",
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 50),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        itemCount: posts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            title: Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.white70,
+                                        offset: Offset(
+                                          5.0,
+                                          5.0,
+                                        ),
+                                        blurRadius: 2.5,
+                                        spreadRadius: 2.0,
+                                      ), //BoxShadow
+                                      BoxShadow(
+                                        color: Colors.white,
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 0.0,
+                                        spreadRadius: 0.0,
+                                      ), //BoxShadow
+                                    ],
+                                    color: Colors.white70,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
                                   child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        posts[0],
-                                        const Icon(Icons.photo, size: 100),
-                                        posts[1],
-                                        posts[2],
-                                      ]))),
-                        );
-                      })),
-            )
+                                    children: [
+                                      Text(posts[index][0], //Title
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 23,
+                                              fontWeight: FontWeight.normal)),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: Text(
+                                                shortContent(posts[index]
+                                                    [3]), //Description
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal)),
+                                          ),
+                                          ClipRect(
+                                              child: Image.asset(
+                                            'assets/images/Screenshot 2024-05-04 at 8.53.45 AM.png',
+                                            width: 100,
+                                            height: 100,
+                                          )),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text("By ${posts[index][1]}", //Author
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold)),
+                                          const SizedBox(width: 10),
+                                          Text(posts[index][2], //Date
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight:
+                                                      FontWeight.normal)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                            onTap: () {
+                              singleton.setKey(singleton.publishedKeys[index]);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const PublishedWork(),
+                              ));
+                            },
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(),
+                      ))
           ],
         )));
   }

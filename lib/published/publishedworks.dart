@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:meilinflutterproject/singleton.dart';
 
 import 'feedbacksurvey.dart';
 import 'feedbackview.dart';
@@ -11,6 +13,29 @@ class PublishedWork extends StatefulWidget {
 }
 
 class _PublishedWorkState extends State<PublishedWork> {
+  final singleton = Singleton();
+  String title = "Draft";
+  String author = "Meilin S.";
+  late String date; //day, month, year
+
+  late QuillController contentController;
+
+  late String draftKey;
+
+  @override
+  void initState() {
+    super.initState();
+    draftKey = singleton.key;
+    if (draftKey != "") {
+      title = singleton.published[draftKey]![0];
+      author = singleton.published[draftKey]![1];
+      date = singleton.published[draftKey]![2];
+      contentController = singleton.contentPublished[draftKey]!;
+    }
+    print(singleton.contentIdea);
+    print(singleton.contentPublished);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,25 +54,29 @@ class _PublishedWorkState extends State<PublishedWork> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  const Text("Title",
-                      style: TextStyle(
+                  Text(title,
+                      style: const TextStyle(
                           color: Colors.black,
                           fontSize: 28,
                           fontWeight: FontWeight.normal)),
-                  const Text("By: Author",
-                      style: TextStyle(
+                  Text("By: $author",
+                      style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.normal)),
+                  Text(date,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal)),
                   const SizedBox(height: 20),
-                  const SizedBox(
-                    height: 480,
-                    child: Text(
-                        "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal)),
+                  Expanded(
+                    child: QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                          controller: contentController,
+                          readOnly: true,
+                          showCursor: false),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () async {

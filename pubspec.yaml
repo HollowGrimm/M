@@ -40,6 +40,9 @@ dependencies:
   flutter_quill:
     git: https://github.com/singerdmx/flutter-quill.git
   flutter_keyboard_visibility: ^6.0.0
+  fluttericon: ^2.0.0
+  uuid: ^4.4.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +60,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/images/Screenshot 2024-05-04 at 8.53.45 AM.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

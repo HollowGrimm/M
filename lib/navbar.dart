@@ -5,6 +5,7 @@ import 'package:meilinflutterproject/navbar/ideas.dart';
 import 'package:meilinflutterproject/navbar/learningCenter.dart';
 import 'package:meilinflutterproject/navbar/story.dart';
 import 'package:meilinflutterproject/profile.dart';
+import 'package:meilinflutterproject/singleton.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -14,6 +15,7 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
+  final singleton = Singleton();
   int currentIndex = 0;
   bool onIdeaTab = false;
 
@@ -52,7 +54,7 @@ class _NavbarState extends State<Navbar> {
       body: tabs[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.red,
+        selectedItemColor: const Color.fromARGB(255, 89, 135, 90),
         unselectedItemColor: Colors.black,
         currentIndex: currentIndex,
         onTap: (int index) {

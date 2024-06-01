@@ -58,6 +58,20 @@ class _FeedbackViewState extends State<FeedbackView> {
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => const Survey(),
+                      // ));
+                    },
+                    child: const Text(
+                      'View Discussion',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   Expanded(
                       child: ListView.separated(

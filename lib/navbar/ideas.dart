@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meilinflutterproject/ideas/draft.dart';
+import 'package:meilinflutterproject/singleton.dart';
 
 class IdeasScreen extends StatefulWidget {
   const IdeasScreen({super.key});
@@ -8,33 +10,34 @@ class IdeasScreen extends StatefulWidget {
 }
 
 class _IdeasScreenState extends State<IdeasScreen> {
-  List<List<Widget>> idea = [
-    [
-      const Text("Topic 1"),
-      const Text(
-          "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,")
-    ],
-    [
-      const Text("Topic 2"),
-      const Text(
-          "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,")
-    ],
-    [
-      const Text("Topic 3"),
-      const Text(
-          "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,")
-    ],
-    [
-      const Text("Topic 4"),
-      const Text(
-          "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,")
-    ],
-    [
-      const Text("Topic 5"),
-      const Text(
-          "Lorem ipsum dolor sit amet,onsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,")
-    ]
-  ];
+  final singleton = Singleton();
+  List<List<String>> idea = [];
+
+  String shortContent(String body) {
+    String tempSentence = "";
+    int counter = 0;
+    String tempChar = body[counter];
+
+    while (counter < body.length - 1 && counter < 121) {
+      tempSentence += tempChar;
+      counter++;
+      tempChar = body[counter];
+    }
+
+    return tempSentence;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (singleton.ideas.isNotEmpty && singleton.ideaKeys.isNotEmpty) {
+      for (int i = 0; i < singleton.ideaKeys.length; i++) {
+        idea.add(singleton.ideas[singleton.ideaKeys[i]]!);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,45 +52,83 @@ class _IdeasScreenState extends State<IdeasScreen> {
                     fontSize: 25,
                     fontWeight: FontWeight.normal)),
             Expanded(
-                child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              itemCount: idea.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                    decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.white70,
-                            offset: Offset(
-                              5.0,
-                              5.0,
+                child: idea.isEmpty // Check if the data source is empty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Create An Idea",
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            blurRadius: 2.5,
-                            spreadRadius: 2.0,
-                          ), //BoxShadow
-                          BoxShadow(
-                            color: Colors.white,
-                            offset: Offset(0.0, 0.0),
-                            blurRadius: 0.0,
-                            spreadRadius: 0.0,
-                          ), //BoxShadow
-                        ],
-                        color: Colors.white70,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          idea[index][0],
-                          const SizedBox(height: 25),
-                          idea[index][1],
-                        ],
-                      ),
-                    ));
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-            ))
+                            SizedBox(height: 50),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        itemCount: idea.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            title: Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.white70,
+                                        offset: Offset(
+                                          5.0,
+                                          5.0,
+                                        ),
+                                        blurRadius: 2.5,
+                                        spreadRadius: 2.0,
+                                      ), //BoxShadow
+                                      BoxShadow(
+                                        color: Colors.white,
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 0.0,
+                                        spreadRadius: 0.0,
+                                      ), //BoxShadow
+                                    ],
+                                    color: Colors.white70,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Column(
+                                    children: [
+                                      Text(idea[index][0],
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.normal)),
+                                      const SizedBox(height: 10),
+                                      Text(idea[index][2],
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.normal)),
+                                      const SizedBox(height: 10),
+                                      Text(shortContent(idea[index][3]),
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.normal)),
+                                    ],
+                                  ),
+                                )),
+                            onTap: () {
+                              singleton.setKey(singleton.ideaKeys[index]);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const DraftScreen(),
+                              ));
+                            },
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(),
+                      ))
           ]),
     );
   }

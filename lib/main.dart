@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:meilinflutterproject/splash.dart';
 
+import 'singleton.dart';
+
 void main() {
+  final singleton = Singleton();
+  singleton.getWriting();
   runApp(const MyApp());
 }
 
