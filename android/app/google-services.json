@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "472300198536",
+    "project_id": "meilinflutterproject",
+    "storage_bucket": "meilinflutterproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472300198536:android:8ac8ff579cf26d4b87dd3d",
+        "android_client_info": {
+          "package_name": "com.example.mayflutterproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYxO4_vReC2_f48AkH7gO8FvQRfijugfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

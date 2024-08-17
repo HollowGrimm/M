@@ -1,11 +1,29 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:meilinflutterproject/splash.dart';
+import 'package:meilinflutterproject/firebase/firebase_cloud.dart';
+import 'package:meilinflutterproject/services/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase/firebase_options.dart';
+import 'services/singleton.dart';
 
-import 'singleton.dart';
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final singleton = Singleton();
-  singleton.getWriting();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (prefs.containsKey("userID")) {
+    FirebaseCloud().getUser(await singleton.getUID());
+  } else {
+    singleton.setUID();
+    String username = singleton.randomName();
+    FirebaseCloud().createUser(
+        await singleton.getUID(), username, "Bio/Description", '', [], [], []);
+    FirebaseCloud().getUser(await singleton.getUID());
+  }
   runApp(const MyApp());
 }
 
@@ -21,7 +39,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      routes: screenRoutes,
     );
   }
 }
