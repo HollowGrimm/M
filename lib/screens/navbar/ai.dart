@@ -21,7 +21,7 @@ class _AIScreenState extends State<AIScreen> {
   List<String> questions = [
     'What is your primary goal for improving your writing? (e.g., writing more clearly, enhancing creativity, achieving a specific tone or style)',
     'Who is your target audience, and how do you want your writing to impact them? (e.g., engaging readers, educating, persuading)',
-    'What specific feedback or criticism have you received about your writing in the past that you want to address? (e.g., unclear arguments, weak thesis)',
+    'What specific feedback or criticism have you received about your writing in the past that you want to address? (e.g., unclear ideas, writer\'s block)',
     'How do you currently approach the writing process, and what changes are you willing to make to improve? (e.g., drafting methods, editing strategies, time management)'
   ];
   List<String> userResponses = ['', '', '', ''];

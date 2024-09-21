@@ -104,18 +104,18 @@ class _PublishedWorkState extends State<PublishedWork> {
                   //     ),
                   //   ],
                   // ),
-                  // ElevatedButton(
-                  //   onPressed: () async {
-                  //     Navigator.popAndPushNamed(context, '/discussion');
-                  //   },
-                  //   child: const Text(
-                  //     'View Discussion',
-                  //     style: TextStyle(
-                  //         color: Colors.black,
-                  //         fontSize: 20,
-                  //         fontWeight: FontWeight.bold),
-                  //   ),
-                  // ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.popAndPushNamed(context, '/discussion');
+                    },
+                    child: const Text(
+                      'View Discussion',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ])));
   }
 }

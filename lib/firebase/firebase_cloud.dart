@@ -149,7 +149,7 @@ class FirebaseCloud {
       try {
         await firestore.collection('ideas_published').doc(documentID).set({
           'comments': [],
-          'feedback': feedback,
+          'feedback': [],
           'modifiedDate': modifiedDate,
           'published': published,
           'story': story,
@@ -175,10 +175,14 @@ class FirebaseCloud {
           documentSnapshot.get('username'),
           documentSnapshot.get('modifiedDate'),
           documentSnapshot.get('story'),
-          documentSnapshot.get('feedback')
         ];
+        List<String> commentsList = ((documentSnapshot.data()
+                as Map<String, dynamic>)['comments'] as List<dynamic>)
+            .map((dynamic item) => item.toString())
+            .toList();
         if (published) {
           singleton.setPublished(tempList);
+          singleton.setCommentIDs(commentsList);
         } else {
           singleton.setIdea(tempList);
         }
@@ -194,6 +198,10 @@ class FirebaseCloud {
 
   Future<void> updateWriting(
       documentId, feedback, modifiedDate, published, story, title) async {
+    if (published) {
+      updateDocumentIDList(
+          'user', await singleton.getUID(), 'publishedList', documentId);
+    }
     try {
       // Reference to the Firestore document
       DocumentReference documentReference = FirebaseFirestore.instance

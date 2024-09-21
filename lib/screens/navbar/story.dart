@@ -13,14 +13,31 @@ class StoryScreen extends StatefulWidget {
 class _StoryScreenState extends State<StoryScreen> {
   final singleton = Singleton();
   bool openSearch = false;
-  String textSearch = "";
+  String searchText = "";
+  int results = 0;
 
-  //TODO: Create Search Algorithm
-  // void search() {
-  //   for(var k, v in posts.) {
-
-  //   }
-  // }
+  List search(fullList) {
+    final tempList = [];
+    if (searchText != '') {
+      for (int i = 0; i < fullList.length; i++) {
+        bool titleName = fullList[i]['title']
+            .toLowerCase()
+            .contains(searchText.toLowerCase());
+        bool authorName = fullList[i]['username']
+            .toLowerCase()
+            .contains(searchText.toLowerCase());
+        bool storyWord = fullList[i]['story']
+            .toLowerCase()
+            .contains(searchText.toLowerCase());
+        if (titleName || authorName || storyWord) {
+          tempList.add(fullList[i]);
+        }
+      }
+    } else {
+      return fullList;
+    }
+    return tempList;
+  }
 
   String shortContent(String body) {
     String tempSentence = "";
@@ -52,55 +69,55 @@ class _StoryScreenState extends State<StoryScreen> {
                       fontSize: 25,
                       fontWeight: FontWeight.bold)),
             ),
-            // Visibility(
-            //     visible: !openSearch,
-            //     child: IconButton(
-            //         onPressed: () {
-            //           setState(() {
-            //             openSearch = true;
-            //           });
-            //         },
-            //         iconSize: 25.0,
-            //         icon: const Icon(
-            //           Icons.search,
-            //           color: Colors.black,
-            //         ))),
-            // Visibility(
-            //   visible: openSearch,
-            //   child: Center(
-            //     child: TextField(
-            //       decoration: const InputDecoration(
-            //           icon: Icon(
-            //         Icons.search,
-            //         color: Colors.black,
-            //       )),
-            //       style: const TextStyle(
-            //           color: Colors.black, fontWeight: FontWeight.normal),
-            //       onChanged: (text) {
-            //         setState(() {
-            //           textSearch = text;
-            //         });
-            //       },
-            //       onTapOutside: (event) {
-            //         setState(() {
-            //           if (textSearch == "") {
-            //             openSearch = false;
-            //           }
-            //         });
-            //       },
-            //     ),
-            //   ),
-            // ),
-            // Visibility(
-            //   visible: openSearch,
-            //   child: const Center(
-            //     child: Text("0 Results Found",
-            //         style: TextStyle(
-            //             color: Colors.black,
-            //             fontSize: 15,
-            //             fontWeight: FontWeight.normal)),
-            //   ),
-            // ),
+            Visibility(
+                visible: !openSearch,
+                child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        openSearch = true;
+                      });
+                    },
+                    iconSize: 25.0,
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ))),
+            Visibility(
+              visible: openSearch,
+              child: Center(
+                child: TextField(
+                  decoration: const InputDecoration(
+                      icon: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  )),
+                  style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  onChanged: (text) {
+                    setState(() {
+                      searchText = text;
+                    });
+                  },
+                  onTapOutside: (event) {
+                    setState(() {
+                      if (searchText == "") {
+                        openSearch = false;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ),
+            Visibility(
+              visible: openSearch,
+              child: Center(
+                child: Text('$results results found',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal)),
+              ),
+            ),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('ideas_published')
@@ -118,24 +135,34 @@ class _StoryScreenState extends State<StoryScreen> {
 
                   final List<QueryDocumentSnapshot<Map<String, dynamic>>>
                       documents = snapshot.data!.docs;
-                  final filteredDocuments =
-                      documents.where((doc) => doc['published']).toList();
+                  final filteredDocuments = search(
+                      documents.where((doc) => doc['published']).toList());
+
+                  if (filteredDocuments.length != results) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        results = filteredDocuments.length;
+                      });
+                    });
+                  }
 
                   return Expanded(
                       child: filteredDocuments
                               .isEmpty // Check if the data source is empty
-                          ? const Center(
+                          ? Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Publish An Idea",
-                                    style: TextStyle(
+                                    searchText == ''
+                                        ? "Publish An Idea"
+                                        : "No search results",
+                                    style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(height: 50),
+                                  const SizedBox(height: 50),
                                 ],
                               ),
                             )

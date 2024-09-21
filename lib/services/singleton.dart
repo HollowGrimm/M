@@ -68,25 +68,25 @@ class Singleton extends ChangeNotifier {
   List<String> names = [
     "Drama",
     "Fable",
-    "FairyTale",
+    "Fairy Tale",
     "Fantasy",
     "Fiction",
-    "FictionInVerse",
+    "Fiction In Verse",
     "Folklore",
-    "HistoricalFiction",
+    "Historical Fiction",
     "Horror",
     "Humor",
     "Legend",
     "Mystery",
     "Mythology",
     "Poetry",
-    "RealisticFiction",
-    "ScienceFiction",
-    "ShortStory",
-    "TallTale",
+    "Realistic Fiction",
+    "Science Fiction",
+    "Short Story",
+    "Tall Tale",
     "Biography/Autobiography",
     "Essay",
-    "NarrativeNonfiction",
+    "Narrative Nonfiction",
     "Nonfiction"
   ];
 
@@ -156,16 +156,16 @@ class Singleton extends ChangeNotifier {
     FirebaseCloud()
         .updateWriting(draftID, feedback, date, publishCheck, body, title);
     setUserIdeasIDs(await FirebaseCloud().getList('ideasList'));
-    setUserpublishedIDs(await FirebaseCloud().getList('publishedList'));
   }
 
-  void publishIdea(draftID, title, author, date, body, feedback) {
+  Future<void> publishIdea(draftID, title, author, date, body, feedback) async {
     userpublishedIDs.add(draftID);
     if (userIdeasIDs.contains(draftID)) {
       updateIdea(draftID, title, author, date, body, feedback);
     } else {
       saveIdea(title, author, date, body, feedback, true);
     }
+    setUserpublishedIDs(await FirebaseCloud().getList('publishedList'));
   }
 
   void tallyFeedbackResults(key, yes, no) {
@@ -210,6 +210,14 @@ class Singleton extends ChangeNotifier {
     notifyListenersSafe();
   }
 
+  List<String> commentIDs = [];
+
+  void setCommentIDs(List<String> c) {
+    commentIDs.clear();
+    commentIDs.addAll(c);
+    notifyListenersSafe();
+  }
+
   Future<void> deleteAccount() async {
     for (var i in userIdeasIDs) {
       await FirebaseCloud().deleteDocument("ideas_published", i);
@@ -220,7 +228,7 @@ class Singleton extends ChangeNotifier {
     }
 
     for (var i in userCommentIDs) {
-      await FirebaseCloud().deleteDocument("user", i);
+      await FirebaseCloud().deleteDocument("comments", i);
     }
 
     await FirebaseCloud().deleteDocument("user", await getUID());
