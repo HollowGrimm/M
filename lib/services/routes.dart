@@ -1,4 +1,5 @@
 import 'package:meilinflutterproject/screens/ideas/draft.dart';
+import 'package:meilinflutterproject/screens/learning_center/document.dart';
 import 'package:meilinflutterproject/screens/published/discussion.dart';
 import 'package:meilinflutterproject/services/navbar.dart';
 import 'package:meilinflutterproject/screens/profile.dart';
@@ -15,5 +16,6 @@ var screenRoutes = {
   '/publishedWork': (context) => const PublishedWork(),
   '/feedbackView': (context) => const FeedbackView(),
   '/feedbackSurvey': (context) => const Survey(),
-  '/discussion': (context) => const DiscussionScreen()
+  '/discussion': (context) => const DiscussionScreen(),
+  '/document': (context) => const Document()
 };

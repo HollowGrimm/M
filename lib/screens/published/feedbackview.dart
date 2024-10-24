@@ -41,12 +41,12 @@ class _FeedbackViewState extends State<FeedbackView> {
   void initState() {
     super.initState();
     key = singleton.id;
-    if (singleton.feedBackSurveyResults.isNotEmpty) {
+    print(singleton.feedBackSurveyResults);
+    if (singleton.feedBackSurveyResults[0].isNotEmpty &&
+        singleton.feedBackSurveyResults[1].isNotEmpty) {
       for (int i = 0; i < 6; i++) {
-        feedbackQuestions[i][1] =
-            singleton.feedBackSurveyResults[key]![i][0].toString();
-        feedbackQuestions[i][2] =
-            singleton.feedBackSurveyResults[key]![i][1].toString();
+        feedbackQuestions[i][1] = singleton.feedBackSurveyResults[0][i];
+        feedbackQuestions[i][2] = singleton.feedBackSurveyResults[1][i];
       }
     }
   }

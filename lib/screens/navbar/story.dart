@@ -66,8 +66,9 @@ class _StoryScreenState extends State<StoryScreen> {
               child: Text("Published Posts",
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold)),
+                      fontSize: 45,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Quincento")),
             ),
             Visibility(
                 visible: !openSearch,
@@ -219,11 +220,12 @@ class _StoryScreenState extends State<StoryScreen> {
                                                                 FontWeight
                                                                     .normal)),
                                                   ),
+                                                  const SizedBox(width: 20),
                                                   ClipRect(
                                                       child: Image.asset(
-                                                    'assets/images/Screenshot 2024-05-04 at 8.53.45 AM.png',
-                                                    width: 100,
-                                                    height: 100,
+                                                    singleton.randomImage(),
+                                                    width: 150,
+                                                    height: 150,
                                                   )),
                                                 ],
                                               ),

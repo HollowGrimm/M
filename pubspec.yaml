@@ -64,8 +64,25 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/Screenshot 2024-05-04 at 8.53.45 AM.png
-
+    - assets/images/Image20241023161411.png
+    - assets/images/Image20241023161434.png
+    - assets/images/Image20241023161437.png
+    - assets/images/Image20241023161440.png
+    - assets/images/Image20241023161443.png
+    - assets/images/Image20241023161446.png
+    - assets/images/Image20241023161451.png
+    - assets/images/Image20241023162530.png
+    - assets/images/Image20241023162534.png
+    - assets/images/Image20241023162544.png
+  
+  fonts:
+    - family: Quincento
+      fonts:
+        - asset: assets/fonts/Quincento-1j2WB.ttf
+    - family: Vremyafwf
+      fonts:
+        - asset: assets/fonts/Vremyafwf-Rp1e.ttf
+  
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

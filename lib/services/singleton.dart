@@ -99,19 +99,53 @@ class Singleton extends ChangeNotifier {
     return "$name1 $name2";
   }
 
+  List<String> publishImages = [
+    "assets/images/Image20241023161434.png",
+    "assets/images/Image20241023161437.png",
+    "assets/images/Image20241023161440.png",
+    "assets/images/Image20241023161443.png",
+    "assets/images/Image20241023161446.png",
+    "assets/images/Image20241023161451.png"
+  ];
+
+  String randomImage() {
+    return publishImages[Random().nextInt(publishImages.length)];
+  }
+
+  String currentDoc = "";
+
+  void setDoc(doc) {
+    currentDoc = doc;
+    notifyListenersSafe();
+  }
+
+  List<String> allGenres = [
+    "Historical Fiction",
+    "Science Fiction",
+    "Fiction",
+    "Nonfiction",
+    "Fantasy",
+    "Mystery and Thriller",
+    "Horror",
+    "Biography/Autobiography",
+    "Memoir/Personal Essay",
+    "Essay",
+    "Journalism",
+    "Poetry",
+    "Satire",
+    "Romance"
+  ];
+
   List<String> idea = [];
   List<String> published = [];
 
   String id = "";
   int navbarIndex = 0;
 
-  Map<String, List<List<int>>> feedBackSurveyResults = {
-    //"key" : [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-  };
-
   List<String> userCommentIDs = [];
   List<String> userIdeasIDs = [];
   List<String> userpublishedIDs = [];
+  List<List<String>> feedBackSurveyResults = [];
 
   void setUserCommentIDs(List<String> i) {
     userCommentIDs.clear();
@@ -168,29 +202,11 @@ class Singleton extends ChangeNotifier {
     setUserpublishedIDs(await FirebaseCloud().getList('publishedList'));
   }
 
-  void tallyFeedbackResults(key, yes, no) {
-    List<List<int>> tempList = [
-      [0, 0],
-      [0, 0],
-      [0, 0],
-      [0, 0],
-      [0, 0],
-      [0, 0]
-    ];
-
-    if (feedBackSurveyResults.containsKey(key)) {
-      tempList = feedBackSurveyResults[key]!;
-    }
-
-    for (int i = 0; i < 6; i++) {
-      if (yes[i][0]) {
-        tempList[i][0] += 1;
-      }
-      if (no[i][0]) {
-        tempList[i][1] += 1;
-      }
-    }
-    feedBackSurveyResults.addAll({key: tempList});
+  void setFeedbackResults(yes, no) {
+    feedBackSurveyResults.clear();
+    feedBackSurveyResults.add(yes);
+    feedBackSurveyResults.add(no);
+    notifyListenersSafe();
   }
 
   void setID(draftID) {

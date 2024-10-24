@@ -14,19 +14,8 @@ class DiscussionScreen extends StatefulWidget {
 class _DiscussionScreenState extends State<DiscussionScreen> {
   final singleton = Singleton();
   String postKey = '';
-  // List<String> commentKeys = [];
-  // List<String> comments = [];
   // List<List<IconData>> iconList = [];
   // List<List<bool>> likes = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   for (var items in comments) {
-  //     iconList.add([Icons.favorite_border, Icons.favorite]);
-  //     likes.add([false]);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,17 +87,23 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final itemData = filteredDocuments[index];
-                                    // setState(() {
-                                    //   for (int i = 0;
-                                    //       i < filteredDocuments.length;
-                                    //       i++) {
-                                    //     iconList.add([
-                                    //       Icons.favorite_border,
-                                    //       Icons.favorite
-                                    //     ]);
-                                    //     likes.add([false]);
-                                    //   }
-                                    // });
+                                    // if (filteredDocuments.length >
+                                    //     iconList.length) {
+                                    //   WidgetsBinding.instance
+                                    //       .addPostFrameCallback((_) {
+                                    //     setState(() {
+                                    //       for (int i = 0;
+                                    //           i < filteredDocuments.length;
+                                    //           i++) {
+                                    //         iconList.add([
+                                    //           Icons.favorite_border,
+                                    //           Icons.favorite
+                                    //         ]);
+                                    //         likes.add([false]);
+                                    //       }
+                                    //     });
+                                    //   });
+                                    // }
                                     return ListTile(
                                       title: Card(
                                         child: Container(
@@ -211,7 +206,6 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                       TextButton(
                         onPressed: () async {
                           // setState(() {
-                          //   comments.add(comment);
                           //   iconList
                           //       .add([Icons.favorite_border, Icons.favorite]);
                           //   likes.add([false]);

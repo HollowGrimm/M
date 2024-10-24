@@ -22,6 +22,8 @@ class _DraftScreenState extends State<DraftScreen> {
   bool minimize = true;
   bool feedbackVisible = true;
   double textBoxSize = 600;
+  List<String> tempGenreList = [];
+  List<Widget> genres = [];
 
   late TextEditingController titleController;
   late TextEditingController contentController;
@@ -45,8 +47,24 @@ class _DraftScreenState extends State<DraftScreen> {
     titleController = TextEditingController(text: title);
     contentController = TextEditingController(text: content);
     feedbackController = TextEditingController(text: feedback);
+
+    tempGenreList = singleton.allGenres;
   }
 
+  void addGenre(String genre) {
+    setState(() {
+      genres.add(ElevatedButton(
+          onPressed: () {
+            setState(() {
+              tempGenreList.add(genre);
+              genres.removeAt(genres.length);
+            });
+          },
+          child: Text(genre)));
+    });
+  }
+
+  //TODO: Remove minize variable
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,8 +97,8 @@ class _DraftScreenState extends State<DraftScreen> {
                           child: Text(title,
                               style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.normal)),
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold)),
                         ),
                       ),
                       Visibility(
@@ -91,8 +109,8 @@ class _DraftScreenState extends State<DraftScreen> {
                               border: OutlineInputBorder()),
                           style: const TextStyle(
                               color: Colors.black,
-                              fontSize: 28,
-                              fontWeight: FontWeight.normal),
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold),
                           onSubmitted: (text) {
                             setState(() {
                               title = titleController.text;
@@ -114,6 +132,31 @@ class _DraftScreenState extends State<DraftScreen> {
                                   color: Colors.black,
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal))),
+                      const SizedBox(height: 28),
+                      Row(
+                        children: [
+                          DropdownButton<String>(
+                            value: tempGenreList[
+                                0], // Initially selected item (can be null)
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                addGenre(newValue!);
+                                tempGenreList.remove(newValue);
+                              });
+                            },
+                            items: tempGenreList
+                                .map<DropdownMenuItem<String>>((String item) {
+                              return DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(item),
+                              );
+                            }).toList(),
+                          ),
+                          Row(
+                            children: genres,
+                          )
+                        ],
+                      ),
                       Visibility(
                           visible: minimize, child: const SizedBox(height: 28)),
                       Visibility(
@@ -203,11 +246,10 @@ class _DraftScreenState extends State<DraftScreen> {
                                   'Save',
                                   style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 20,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              const SizedBox(width: 10),
                               ElevatedButton(
                                 onPressed: () async {
                                   setState(() {
@@ -221,7 +263,7 @@ class _DraftScreenState extends State<DraftScreen> {
                                   'Publish',
                                   style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 20,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -231,7 +273,7 @@ class _DraftScreenState extends State<DraftScreen> {
                                     onPressed: () async {
                                       setState(() {
                                         title = "Draft";
-                                        content = "Type something here.";
+                                        content = "Type something...";
                                         feedback = "I want feedback on...";
                                         titleController =
                                             TextEditingController(text: title);
@@ -247,58 +289,64 @@ class _DraftScreenState extends State<DraftScreen> {
                                       'Cancel',
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   )),
+                              Visibility(
+                                  visible: minimize,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext c) =>
+                                                AlertDialog(
+                                                  content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        TextField(
+                                                          controller:
+                                                              feedbackController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                                  border:
+                                                                      OutlineInputBorder()),
+                                                          style: const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal),
+                                                        ),
+                                                      ]),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        setState(() {
+                                                          feedback =
+                                                              feedbackController
+                                                                  .text;
+                                                        });
+                                                        Navigator.pop(c, 'Ok');
+                                                      },
+                                                      child: const Text('Ok'),
+                                                    ),
+                                                  ],
+                                                ));
+                                      },
+                                      child: const Text(
+                                        'Feedback',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  )),
                             ],
-                          )),
-                      Visibility(
-                          visible: minimize,
-                          child: Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext c) => AlertDialog(
-                                          content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextField(
-                                                  controller:
-                                                      feedbackController,
-                                                  decoration: const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder()),
-                                                  style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ),
-                                              ]),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () async {
-                                                setState(() {
-                                                  feedback =
-                                                      feedbackController.text;
-                                                });
-                                                Navigator.pop(c, 'Ok');
-                                              },
-                                              child: const Text('Ok'),
-                                            ),
-                                          ],
-                                        ));
-                              },
-                              child: const Text(
-                                'Feedback',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
                           )),
                     ]))),
           ),

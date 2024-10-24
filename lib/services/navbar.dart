@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meilinflutterproject/screens/navbar/ai.dart';
 import 'package:meilinflutterproject/screens/navbar/ideas.dart';
-//import 'package:meilinflutterproject/navbar/learningCenter.dart';
+import 'package:meilinflutterproject/screens/navbar/learningCenter.dart';
 import 'package:meilinflutterproject/screens/navbar/story.dart';
 import 'package:meilinflutterproject/services/singleton.dart';
 
@@ -21,13 +21,28 @@ class _NavbarState extends State<Navbar> {
     StoryScreen(),
     IdeasScreen(),
     AIScreen(),
-    //LearningCenterScreen()
+    LearningCenterScreen()
   ];
 
   @override
   void initState() {
     super.initState();
     currentIndex = singleton.navbarIndex;
+  }
+
+  List<Widget> bgFinder() {
+    List<Widget> W = [];
+    if (currentIndex == 2) {
+      W.add(Container(
+        color: const Color.fromARGB(135, 202, 255, 204),
+      ));
+    } else if (currentIndex == 3) {
+      W.add(Container(
+        color: Colors.black,
+      ));
+    }
+    W.add(tabs[currentIndex]);
+    return W;
   }
 
   @override
@@ -38,8 +53,9 @@ class _NavbarState extends State<Navbar> {
         title: const Text("Community Editor",
             style: TextStyle(
                 color: Colors.black,
-                fontSize: 22,
-                fontWeight: FontWeight.bold)),
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Quincento")),
         leadingWidth: 180,
         actions: [
           IconButton(
@@ -53,7 +69,7 @@ class _NavbarState extends State<Navbar> {
               ))
         ],
       ),
-      body: tabs[currentIndex],
+      body: Stack(children: bgFinder()),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color.fromARGB(255, 89, 135, 90),
@@ -68,7 +84,7 @@ class _NavbarState extends State<Navbar> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Story'),
           BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: 'Ideas'),
           BottomNavigationBarItem(icon: Icon(Icons.smart_screen), label: 'AI'),
-          //BottomNavigationBarItem(icon: Icon(Icons.book), label: 'LC'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'LC'),
         ],
         showUnselectedLabels: true,
       ),

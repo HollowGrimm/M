@@ -149,7 +149,8 @@ class FirebaseCloud {
       try {
         await firestore.collection('ideas_published').doc(documentID).set({
           'comments': [],
-          'feedback': [],
+          'yes': [],
+          'no': [],
           'modifiedDate': modifiedDate,
           'published': published,
           'story': story,
@@ -180,9 +181,18 @@ class FirebaseCloud {
                 as Map<String, dynamic>)['comments'] as List<dynamic>)
             .map((dynamic item) => item.toString())
             .toList();
+        List<String> yesList = ((documentSnapshot.data()
+                as Map<String, dynamic>)['yes'] as List<dynamic>)
+            .map((dynamic item) => item.toString())
+            .toList();
+        List<String> noList = ((documentSnapshot.data()
+                as Map<String, dynamic>)['no'] as List<dynamic>)
+            .map((dynamic item) => item.toString())
+            .toList();
         if (published) {
           singleton.setPublished(tempList);
           singleton.setCommentIDs(commentsList);
+          singleton.setFeedbackResults(yesList, noList);
         } else {
           singleton.setIdea(tempList);
         }
@@ -256,6 +266,53 @@ class FirebaseCloud {
       Map<String, dynamic> updatedFields = {
         'likes': likes,
       };
+
+      // Update the fields in the document
+      await documentReference.update(updatedFields);
+
+      print('Document with ID $documentId updated successfully.');
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  // Future<void> getFeedback(documentId) async {
+  //   try {
+  //     DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+  //         .collection('ideas_published')
+  //         .doc(documentId)
+  //         .get();
+
+  //     if (documentSnapshot.exists) {
+  //       List<String> yesList = ((documentSnapshot.data()
+  //               as Map<String, dynamic>)['yes'] as List<dynamic>)
+  //           .map((dynamic item) => item.toString())
+  //           .toList();
+  //       List<String> noList = ((documentSnapshot.data()
+  //               as Map<String, dynamic>)['no'] as List<dynamic>)
+  //           .map((dynamic item) => item.toString())
+  //           .toList();
+  //       singleton.setFeedbackResults(yesList, noList);
+
+  //       // Perform actions with the data
+  //       print('Document ID: ${documentSnapshot.id}');
+  //     } else {
+  //       print('Document with ID testuser1 does not exist.');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
+
+  Future<void> updateFeedback(documentId, yes, no) async {
+    try {
+      // Reference to the Firestore document
+      DocumentReference documentReference = FirebaseFirestore.instance
+          .collection('ideas_published')
+          .doc(documentId);
+
+      // Create a map of fields to update
+      Map<String, dynamic> updatedFields = {'yes': yes, 'no': no};
 
       // Update the fields in the document
       await documentReference.update(updatedFields);

@@ -34,14 +34,15 @@ class _IdeasScreenState extends State<IdeasScreen> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text("My Ideas",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.normal)),
+                    fontSize: 45,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Quincento")),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('ideas_published')

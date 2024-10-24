@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meilinflutterproject/firebase/firebase_cloud.dart';
 //import 'package:flutter_quill/flutter_quill.dart';
 import 'package:meilinflutterproject/services/singleton.dart';
 
@@ -75,45 +76,49 @@ class _PublishedWorkState extends State<PublishedWork> {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     ElevatedButton(
-                  //       onPressed: () async {
-                  //         Navigator.popAndPushNamed(context, '/feedbackView');
-                  //       },
-                  //       child: const Text(
-                  //         'View Feedback',
-                  //         style: TextStyle(
-                  //             color: Colors.black,
-                  //             fontSize: 20,
-                  //             fontWeight: FontWeight.bold),
-                  //       ),
-                  //     ),
-                  //     ElevatedButton(
-                  //       onPressed: () async {
-                  //         Navigator.popAndPushNamed(context, '/feedbackSurvey');
-                  //       },
-                  //       child: const Text(
-                  //         'Feedback Survey',
-                  //         style: TextStyle(
-                  //             color: Colors.black,
-                  //             fontSize: 20,
-                  //             fontWeight: FontWeight.bold),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      Navigator.popAndPushNamed(context, '/discussion');
-                    },
-                    child: const Text(
-                      'View Discussion',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          // FirebaseCloud().getFeedback(draftID);
+                          Navigator.popAndPushNamed(context, '/feedbackView');
+                        },
+                        child: const Text(
+                          'View Feedback',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // FirebaseCloud().getFeedback(draftID);
+                          Navigator.popAndPushNamed(context, '/feedbackSurvey');
+                        },
+                        child: const Text(
+                          'Feedback Survey',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.popAndPushNamed(context, '/discussion');
+                      },
+                      child: const Text(
+                        'View Discussion',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ])));

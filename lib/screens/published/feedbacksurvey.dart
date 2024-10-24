@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meilinflutterproject/firebase/firebase_cloud.dart';
 
 import '../../services/singleton.dart';
 
@@ -20,36 +21,67 @@ class _SurveyState extends State<Survey> {
     "Did the author add enough details for you to connect with the piece?",
     "How was the tone of the piece?"
   ];
-  List<List<IconData>> yesOrNoIcons = [
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined],
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined],
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined],
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined],
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined],
-    [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined]
-  ];
-
-  List<List<bool>> yesToggle = [
-    [false],
-    [false],
-    [false],
-    [false],
-    [false],
-    [false]
-  ];
-  List<List<bool>> noToggle = [
-    [false],
-    [false],
-    [false],
-    [false],
-    [false],
-    [false]
-  ];
+  List<List<IconData>> yesOrNoIcons = [];
+  List<List<bool>> yesToggle = [];
+  List<List<bool>> noToggle = [];
 
   @override
   void initState() {
     super.initState();
     key = singleton.id;
+
+    for (int i = 0; i < feedbackQuestions.length; i++) {
+      yesOrNoIcons.add(
+          [Icons.thumb_up_off_alt_outlined, Icons.thumb_down_off_alt_outlined]);
+      yesToggle.add([false]);
+      noToggle.add([false]);
+    }
+  }
+
+  List<String> countYesResults() {
+    List<String> tempYes = [];
+    if (singleton.feedBackSurveyResults[0].isNotEmpty &&
+        singleton.feedBackSurveyResults[1].isNotEmpty) {
+      for (int i = 0; i < feedbackQuestions.length; i++) {
+        if (yesToggle[0][0] == true) {
+          tempYes.add((int.parse(singleton.feedBackSurveyResults[0][i]) + 1)
+              .toString());
+        }
+      }
+    } else {
+      for (int i = 0; i < feedbackQuestions.length; i++) {
+        if (yesToggle[0][0] == true) {
+          tempYes.add("1");
+        } else {
+          tempYes.add("0");
+        }
+      }
+    }
+
+    return tempYes;
+  }
+
+  List<String> countNoResults() {
+    List<String> tempNo = [];
+    if (singleton.feedBackSurveyResults[0].isNotEmpty &&
+        singleton.feedBackSurveyResults[1].isNotEmpty) {
+      for (int i = 0; i < feedbackQuestions.length; i++) {
+        if (noToggle[0][0] == true) {
+          tempNo.add((int.parse(singleton.feedBackSurveyResults[0][i]) + 1)
+              .toString());
+        }
+      }
+    } else {
+      for (int i = 0; i < feedbackQuestions.length; i++) {
+        if (noToggle[0][0] == true) {
+          tempNo.add("1");
+        } else {
+          tempNo.add("0");
+        }
+      }
+    }
+
+    return tempNo;
   }
 
   @override
@@ -160,7 +192,8 @@ class _SurveyState extends State<Survey> {
                   )),
                   ElevatedButton(
                     onPressed: () {
-                      singleton.tallyFeedbackResults(key, yesToggle, noToggle);
+                      FirebaseCloud().updateFeedback(
+                          key, countYesResults(), countNoResults());
                       Navigator.popAndPushNamed(context, '/publishedWork');
                     },
                     child: const Text(

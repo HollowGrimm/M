@@ -99,8 +99,9 @@ class _AIScreenState extends State<AIScreen> {
                   child: Text("AI Assistant",
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold)),
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Quincento")),
                 ),
                 AI
                     ? Column(
