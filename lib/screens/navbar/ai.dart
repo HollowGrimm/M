@@ -25,6 +25,8 @@ class _AIScreenState extends State<AIScreen> {
     'How do you currently approach the writing process, and what changes are you willing to make to improve? (e.g., drafting methods, editing strategies, time management)'
   ];
   List<String> userResponses = ['', '', '', ''];
+  String key =
+      "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";
 
   Future<void> handleMessage() async {
     List<String> questionList = [];
@@ -78,7 +80,7 @@ class _AIScreenState extends State<AIScreen> {
 
     // Initialize ChatGPT SDK
     openAI = OpenAI.instance.build(
-      token: 'sk-proj-04a1XMGifxLdnT1dl2k9T3BlbkFJUeGL9DtfCBYKcZlDlLhR',
+      token: key,
       baseOption: HttpSetup(
         receiveTimeout: const Duration(seconds: 30),
       ),
