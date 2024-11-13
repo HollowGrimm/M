@@ -41,6 +41,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# AI file
-/lib/screens/navbar/ai.dart
